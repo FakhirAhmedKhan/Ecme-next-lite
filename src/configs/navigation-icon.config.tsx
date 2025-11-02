@@ -12,6 +12,7 @@ export type NavigationIcons = Record<string, JSX.Element>
 
 const navigationIcon: NavigationIcons = {
     home: <PiHouseLineDuotone />,
+    Supplier: <PiHouseLineDuotone />,
     singleMenu: <PiAcornDuotone />,
     collapseMenu: <PiArrowsInDuotone />,
     groupSingleMenu: <PiBookOpenUserDuotone />,
