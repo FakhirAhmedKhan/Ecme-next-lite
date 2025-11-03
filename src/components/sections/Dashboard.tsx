@@ -1,11 +1,11 @@
 "use client";
-import { Banknote, Receipt, ShoppingCart, TrendingUp } from "lucide-react";
+import Header from "../ui/Head/head";
 import { StatCard } from "../ui/Card/Card";
-import DashboardHeader from "../ui/DashboardHeader/head";
-import ErrorHeanding from "../ui/ErrorHeanding/ErrorHeanding";
-import { SalesChart } from "../ui/SalesChart/SalesChart";
-import FinancialOverview from "../ui/FinancialOverview/FinancialOverview";
 import useDashboard from "@/utils/hooks/useDashboard";
+import { SalesChart } from "../ui/SalesChart/SalesChart";
+import ErrorHeanding from "../ui/ErrorHeanding/ErrorHeanding";
+import FinancialOverview from "../ui/FinancialOverview/FinancialOverview";
+import { Banknote, Receipt, ShoppingCart, TrendingUp } from "lucide-react";
 
 export default function Dashboard() {
   const {
@@ -35,8 +35,8 @@ export default function Dashboard() {
 
   return (
     <div className="bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/20 relative">
-      <DashboardHeader
-        H1tittlw="Inventory Dashboard"
+      <Header
+        H1Heading="Inventory Dashboard"
         paragraph="Real-time insights and analytics at your fingertips."
         Updates="3 New Updates"
         StutsUpdates="All Systems Operational"
@@ -45,6 +45,7 @@ export default function Dashboard() {
         isVisible={isVisible}
         time={time}
         greeting={greeting}
+        showButton={false}
       />
 
       {/* Stat Cards */}

@@ -1,10 +1,12 @@
 'use client'
 import React from 'react'
-import { useCustomer } from '@/utils/hooks/useCustomer'
-import Header from '../ui/Head/Header'
+import { Users } from 'lucide-react';
+import { Table } from '../ui/Table/table'
+import Header from "../ui/Head/head";
 import SearchBar from '../ui/searchbar/searchbar'
 import { EmptyStatus } from '../ui/Loader/EmptyStatu'
-import { Table } from '../ui/Table/table'
+import useDashboard from '@/utils/hooks/useDashboard';
+import { useCustomer } from '@/utils/hooks/useCustomer'
 import { Pagination } from '../ui/pagenation/Pagination'
 import CustomerModalForm from '../ui/Models/CustomerModalForm'
 
@@ -25,7 +27,13 @@ const Customer = () => {
     isModalOpen,
     setIsModalOpen,
   } = useCustomer()
-
+  const {
+    data,
+    chartData,
+    isVisible,
+    time,
+    greeting,
+  } = useDashboard();
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4">
 
@@ -34,8 +42,17 @@ const Customer = () => {
         H1Heading="Customer Management"
         Paragraph="Manage your Customer and track performance"
         BtnText="Add Customer"
-      />
+        Updates="3 New Updates"
+        StutsUpdates="All Systems Operational"
+        setChartData={chartData}
+        setData={data}
+        isVisible={isVisible}
+        time={time}
+        greeting={greeting}
+        showRangePicker={false}
+        Icon={<Users className="text-white" size={28} />} // ✅ dynamic icon
 
+      />
       <SearchBar
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}

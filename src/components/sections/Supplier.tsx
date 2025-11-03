@@ -1,11 +1,13 @@
 'use client'
 import React from 'react'
-import { useSuppliers } from '@/utils/hooks/useSuppliers'
-import Header from '../ui/Head/Header'
+import Header from "../ui/Head/head";
+import { Table } from '../ui/Table/table'
+import { UserPlus2, } from 'lucide-react';
 import SearchBar from '../ui/searchbar/searchbar'
 import { EmptyStatus } from '../ui/Loader/EmptyStatu'
-import { Table } from '../ui/Table/table'
+import useDashboard from '@/utils/hooks/useDashboard';
 import { Pagination } from '../ui/pagenation/Pagination'
+import { useSuppliers } from '@/utils/hooks/useSuppliers'
 import SupplierModalForm from '../ui/Models/SupplierModels'
 
 const Supplier = () => {
@@ -25,7 +27,13 @@ const Supplier = () => {
     isModalOpen,
     setIsModalOpen,
   } = useSuppliers()
-
+  const {
+    chartData,
+    data,
+    isVisible,
+    time,
+    greeting,
+  } = useDashboard();
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4">
 
@@ -34,6 +42,15 @@ const Supplier = () => {
         H1Heading="Supplier Management"
         Paragraph="Manage your suppliers and track performance"
         BtnText="Add supplier"
+        setChartData={chartData}
+        Updates="3 New Updates"
+        StutsUpdates="All Systems Operational"
+        setData={data}
+        isVisible={isVisible}
+        time={time}
+        showRangePicker={false}
+        Icon={<UserPlus2 className="text-white" size={28} />} // ✅ dynamic icon
+        greeting={greeting}
       />
 
       <SearchBar
