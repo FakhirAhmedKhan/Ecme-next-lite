@@ -17,11 +17,9 @@ export default async function RootLayout({
 }: Readonly<{
     children: ReactNode
 }>) {
-    const session = await auth()
-
     const navigationTree = await getNavigation()
-
     const theme = await getTheme()
+    const session = await auth()
 
     return (
         <AuthProvider session={session}>

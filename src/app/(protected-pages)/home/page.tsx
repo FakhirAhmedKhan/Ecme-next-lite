@@ -1,5 +1,7 @@
+import Dashboard from "@/components/sections/Dashboard"
+
 const Page = () => {
-    return <div>Home page</div>
+    return <Dashboard />
 }
 
 export default Page
