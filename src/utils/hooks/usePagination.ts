@@ -1,43 +1,33 @@
-import { useState } from 'react'
+'use client'
+import { useState, useCallback } from 'react'
 
 export const usePagination = (initialPageSize = 10) => {
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(initialPageSize)
   const [totalPages, setTotalPages] = useState(1)
-  const getPageNumbers = () => {
-    const pages = []
-    const showEllipsis = totalPages > 7
 
-    if (!showEllipsis) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i)
-      }
-    } else {
-      if (pageNumber <= 4) {
-        for (let i = 1; i <= 5; i++) pages.push(i)
-        pages.push('ellipsis')
-        pages.push(totalPages)
-      } else if (pageNumber >= totalPages - 3) {
-        pages.push(1)
-        pages.push('ellipsis')
-        for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i)
-      } else {
-        pages.push(1)
-        pages.push('ellipsis')
-        for (let i = pageNumber - 1; i <= pageNumber + 1; i++) pages.push(i)
-        pages.push('ellipsis')
-        pages.push(totalPages)
-      }
+  // Jump to a specific page
+  const handlePageJump = useCallback((page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setPageNumber(page)
+    }
+  }, [totalPages])
+
+  // Generate array of visible page numbers
+  const getPageNumbers = useCallback(() => {
+    const maxVisible = 5
+    const half = Math.floor(maxVisible / 2)
+    let start = Math.max(1, pageNumber - half)
+    let end = Math.min(totalPages, start + maxVisible - 1)
+
+    if (end - start < maxVisible - 1) {
+      start = Math.max(1, end - maxVisible + 1)
     }
 
-    return pages
-  }
-  const handlePageJump = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value)
-    if (value >= 1 && value <= totalPages) setPageNumber(value)
-  }
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i)
+  }, [pageNumber, totalPages])
+
   return {
-    getPageNumbers,
     pageNumber,
     setPageNumber,
     pageSize,
@@ -45,5 +35,6 @@ export const usePagination = (initialPageSize = 10) => {
     totalPages,
     setTotalPages,
     handlePageJump,
+    getPageNumbers,
   }
 }

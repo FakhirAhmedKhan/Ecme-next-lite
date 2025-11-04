@@ -37,6 +37,16 @@ const navigationConfig: NavigationTree[] = [
         authority: [],
         subMenu: [],
     },
+    {
+        key: 'Product',
+        path: '/Product',
+        title: 'Product',
+        translateKey: 'nav.Product',
+        icon: 'Product',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu: [],
+    },
     // {
     //     key: 'collapseMenu',
     //     path: '',
