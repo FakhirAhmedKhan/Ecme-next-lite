@@ -14,12 +14,19 @@ interface Entity {
 }
 
 interface TableProps {
-  data: Entity[]          // renamed for clarity
-  setIsModalOpen: (entity: Entity) => void
+  data: Entity[]
+  setIsModalOpen: (open: boolean) => void
+  onEdit?: (entity: Entity) => void
   isLoading?: boolean
+  showButton?: boolean
 }
 
-export const Table: React.FC<TableProps> = ({ data, setIsModalOpen }) => {
+export const Table: React.FC<TableProps> = ({
+  data,
+  setIsModalOpen,
+  onEdit,
+  showButton = true,
+}) => {
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
@@ -33,62 +40,78 @@ export const Table: React.FC<TableProps> = ({ data, setIsModalOpen }) => {
               <th className="text-left p-3">Total Value</th>
               <th className="text-left p-3">Created At</th>
               <th className="text-left p-3">Status</th>
-              <th className="text-left p-3">Actions</th>
+              {showButton && <th className="text-left p-3">Actions</th>}
             </tr>
           </thead>
-          <tbody>
-            {data.map((entity, index) => (
-              <tr
-                key={entity.id}
-                className="hover:bg-slate-50 transition-colors border-b border-slate-100"
-              >
-                <td className="px-6 py-4 text-sm font-medium">{index + 1}</td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold">
-                      {entity.Name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-slate-900">{entity.Name}</p>
-                      <p className="text-xs text-slate-500">{entity.email}</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-sm text-slate-600">{entity.phoneNumber}</td>
-                <td className="px-6 py-4 text-sm text-slate-600">{entity.totalOrders}</td>
-                <td className="px-6 py-4 text-sm text-slate-600">
-                  {entity.totalValue.toLocaleString()}
-                </td>
-                <td className="px-6 py-4 text-sm text-slate-600">
-                  {new Date(entity.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                  })}
-                </td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${entity.activeStatus
-                      ? 'bg-emerald-100 text-emerald-700'
-                      : 'bg-slate-200 text-slate-600'
-                      }`}
-                  >
-                    {entity.activeStatus ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
-                    {entity.activeStatus ? 'Active' : 'Inactive'}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <button
-                    // onClick={() => onEdit(entity)}
-                    onClick={() => setIsModalOpen(true)}
 
-                    className="p-2 hover:bg-indigo-50 rounded-lg transition-colors group"
-                  >
-                    <Edit2 size={16} className="text-slate-400 group-hover:text-indigo-600" />
-                  </button>
+          <tbody>
+            {data.length === 0 ? (
+              <tr>
+                <td colSpan={8} className="text-center text-slate-500 py-6 text-sm">
+                  No records found
                 </td>
               </tr>
-            ))}
+            ) : (
+              data.map((entity, index) => (
+                <tr
+                  key={entity.id}
+                  className="hover:bg-slate-50 transition-colors border-b border-slate-100"
+                >
+                  <td className="px-6 py-4 text-sm font-medium">{index + 1}</td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                        {entity?.Name?.charAt(0) || '?'}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-slate-900">{entity.Name}</p>
+                        <p className="text-xs text-slate-500">{entity.email}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-600">{entity.phoneNumber}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600">{entity.totalOrders}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600">
+                    ${entity.totalValue.toLocaleString() || '0'}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-600">
+                    {new Date(entity.createdAt).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${entity.activeStatus
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : 'bg-slate-200 text-slate-600'
+                        }`}
+                    >
+                      {entity.activeStatus ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
+                      {entity.activeStatus ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+
+                  {showButton && (
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => {
+                          setIsModalOpen(true)
+                          onEdit?.(entity)
+                        }}
+                        className="p-2 hover:bg-indigo-50 rounded-lg transition-colors group"
+                      >
+                        <Edit2
+                          size={16}
+                          className="text-slate-400 group-hover:text-indigo-600"
+                        />
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
