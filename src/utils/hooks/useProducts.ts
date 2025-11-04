@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { usePagination } from './usePagination'
 
 export interface Stock {
@@ -81,23 +81,47 @@ const mockProducts: Stock[] = [
 ]
 
 export const useProducts = () => {
+  const router = useRouter()
+  const params = useParams()
+  const id = params?.id as string | undefined
+
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'available' | 'sold'>('all')
   const [isLoading, setIsLoading] = useState(false)
   const [products, setProducts] = useState<Stock[]>([])
+  const [product, setProduct] = useState<Stock | null>(null)
+  const [activeTab, setActiveTab] = useState<'orders' | 'returns' | 'repairs'>('orders')
 
-  const router = useRouter()
   const { pageNumber, pageSize, setTotalPages } = usePagination(10)
 
-  // 🔹 Mock API + pagination + filtering
+  // 🔹 Fetch single product by ID (for details view)
+  useEffect(() => {
+    if (!id) return
+
+    setIsLoading(true)
+    // Simulate API call - replace with actual API call
+    setTimeout(() => {
+      const foundProduct = mockProducts.find(p => p.id === id)
+      setProduct(foundProduct || null)
+      setIsLoading(false)
+    }, 300)
+  }, [id])
+
+  // 🔹 Fetch products list with pagination and filtering
   const fetchProducts = useCallback(async () => {
     setIsLoading(true)
     try {
+      // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 500))
 
-      const filtered = mockProducts.filter((item) =>
+      let filtered = mockProducts.filter((item) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
+
+      // Apply status filter
+      if (selectedStatus !== 'all') {
+        filtered = filtered.filter(item => item.status === selectedStatus)
+      }
 
       const start = (pageNumber - 1) * pageSize
       const end = start + pageSize
@@ -110,29 +134,40 @@ export const useProducts = () => {
     } finally {
       setIsLoading(false)
     }
-  }, [searchTerm, pageNumber, pageSize, setTotalPages])
+  }, [searchTerm, selectedStatus, pageNumber, pageSize, setTotalPages])
 
   useEffect(() => {
-    fetchProducts()
-  }, [fetchProducts])
+    // Only fetch product list if we're not on a detail page
+    if (!id) {
+      fetchProducts()
+    }
+  }, [fetchProducts, id])
 
-  const filteredProducts = useMemo(() => {
-    return products.filter(
-      (p) => selectedStatus === 'all' || p.status === selectedStatus
-    )
-  }, [products, selectedStatus])
+  // 🔹 Navigation handler for viewing product details
+  const handleViewDetails = useCallback((productId: string) => {
+    router.push(`/Product/${productId}`)
+  }, [router])
 
-  const handleViewDetails = (productId: string) => {
-    router.push(`/product/${productId}`)
-  }
+  const navigate = useCallback((path: string) => {
+    router.push(path)
+  }, [router])
 
   return {
+    // List view data
     searchTerm,
     setSearchTerm,
     selectedStatus,
     setSelectedStatus,
-    products: filteredProducts,
+    products,
+
+    // Detail view data
+    product,
+    activeTab,
+    setActiveTab,
+
+    // Common
     isLoading,
     handleViewDetails,
+    navigate,
   }
 }
