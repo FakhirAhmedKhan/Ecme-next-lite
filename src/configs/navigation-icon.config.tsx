@@ -18,6 +18,7 @@ const navigationIcon: NavigationIcons = {
     singleMenu: <PiAcornDuotone />,
     order: <PiAcornDuotone />,
     Stock: <PiAcornDuotone />,
+    invoice: <PiAcornDuotone />,
     collapseMenu: <PiArrowsInDuotone />,
     groupSingleMenu: <PiBookOpenUserDuotone />,
     groupCollapseMenu: <PiBookBookmarkDuotone />,
