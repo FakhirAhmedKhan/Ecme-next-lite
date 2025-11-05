@@ -1,15 +1,14 @@
 'use client'
 import React from 'react'
-import { Users } from 'lucide-react'
 import Header from '../ui/Head/head'
 import SearchBar from '../ui/searchbar/searchbar'
-import { Table } from '../ui/Table/table'
 import { EmptyStatus } from '../ui/Loader/EmptyStatu'
 import { Pagination } from '../ui/pagenation/Pagination'
 import { usePagination } from '@/utils/hooks/usePagination'
 import useDashboard from '@/utils/hooks/useDashboard'
 import { useStock } from '@/utils/hooks/useStock'
 import StockTable from '../ui/Table/StockTable'
+import { FaBoxOpen } from 'react-icons/fa6'
 
 const Stock = () => {
   const { data, chartData, isVisible, time, greeting } = useDashboard()
@@ -25,6 +24,7 @@ const Stock = () => {
     pageSize,
     setPageSize,
     totalPages,
+    handleViewDetails
   } = useStock()
 
   const { pageNumber: p, handlePageJump, setPageNumber: setPN, getPageNumbers } = usePagination(pageSize)
@@ -49,7 +49,7 @@ const Stock = () => {
         time={time}
         greeting={greeting}
         showRangePicker={false}
-        Icon={<Users className="text-white" size={28} />}
+        Icon={<FaBoxOpen className="text-white" size={28} />}
         showButton={false}
       />
 
@@ -69,7 +69,7 @@ const Stock = () => {
       {!isLoading && filteredStocks.length > 0 && (
         <StockTable
           stocks={filteredStocks}
-          // handleViewDetails={handleViewDetails}
+          handleViewDetails={handleViewDetails}
           statusConfig={statusConfig}
         />
       )}

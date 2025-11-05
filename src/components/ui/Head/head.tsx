@@ -1,22 +1,7 @@
 import { TrendingUp, Sparkles, Plus } from 'lucide-react'
 import { ReactNode } from 'react';
 import RangePicker from '../RangePicker/RangePicker';
-
-interface HeaderProps {
-  H1Heading: string;
-  Paragraph: string;
-  BtnText: string;
-  setChartData: string;
-  setData: string;
-  isVisible: boolean;
-  time: Date;
-  StutsUpdates: string;
-  Updates: string;
-  Icon?: ReactNode;
-  setIsModalOpen: (open: boolean) => void;
-  showButton?: boolean;
-  showRangePicker?: boolean;
-}
+import type { HeaderProps as HeaderPropsType } from '@/@types/header'
 
 export default function Header({
   BtnText,
@@ -32,7 +17,7 @@ export default function Header({
   showButton = true,
   showRangePicker = true,
   Icon
-}: HeaderProps) {
+}: HeaderPropsType) {
 
   return (
     <div className="relative bg-gradient-to-br from-violet-50 via-white to-fuchsia-50/40 overflow-hidden">
@@ -101,10 +86,10 @@ export default function Header({
                 <div className="w-full">
                   <RangePicker
                     onDashboardFetched={(fetchedData) => {
-                      setData(fetchedData)
+                      if (setData) setData(fetchedData)
                     }}
                     onChartFetched={(chartFetched) => {
-                      setChartData(chartFetched)
+                      if (setChartData) setChartData(chartFetched)
                     }}
                   />
                 </div>
@@ -129,7 +114,7 @@ export default function Header({
             <div className="flex justify-start">
               <button
                 className="group relative px-8 py-4 bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 text-white rounded-2xl font-bold shadow-2xl shadow-violet-500/40 hover:shadow-violet-500/60 transition-all duration-300 hover:scale-105 overflow-hidden"
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => setIsModalOpen && setIsModalOpen(true)}
               >
                 {/* Shine effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-700 transform -skew-x-12 group-hover:translate-x-full" />

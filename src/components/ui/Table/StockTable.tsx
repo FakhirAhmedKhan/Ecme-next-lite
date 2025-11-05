@@ -1,14 +1,7 @@
 'use client'
 import React from 'react'
 import { Eye } from 'lucide-react'
-import { Stock } from '@/utils/hooks/useStock'
-
-interface StatusConfig {
-  [key: string]: {
-    label: string
-    color: string
-  }
-}
+import { Stock, StatusConfig } from '@/@types/stock'
 
 interface StockTableProps {
   stocks: Stock[]
@@ -54,8 +47,8 @@ const StockTable: React.FC<StockTableProps> = ({ stocks, handleViewDetails, stat
                 <td className="px-6 py-4 text-sm text-slate-600">${stock.stockPrice.toLocaleString()}</td>
                 <td className="px-6 py-4 text-sm text-slate-600">${stock.totalProfit.toLocaleString()}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusConfig[stock.status || '']?.color || ''}`}>
-                    {statusConfig[stock.status || '']?.label || 'Unknown'}
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusConfig[String(stock.status || 0)]?.color || ''}`}>
+                    {statusConfig[String(stock.status || 0)]?.label || 'Unknown'}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-sm text-slate-600">

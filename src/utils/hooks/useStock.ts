@@ -2,59 +2,49 @@
 'use client'
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import type { Stock } from '@/@types/stock'
 
-// ✅ Stock type
-export interface Stock {
-  id: string
-  stockTitle: string
-  suppliarName: string
-  totalQuantity: number
-  stockPrice: number
-  totalProfit: number
-  quantityAvailable: number
-  reorderLevel: number
-  createdAt: string
-}
-
-// ✅ Mock data (optional for testing)
-const mockStocks: Stock[] = Array.from({ length: 25 }).map((_, i) => ({
+// ✅ Mock data for testing (replace with API call in production)
+const mockStocks: Stock[] = Array.from({ length: 50 }).map((_, i) => ({
   id: `${i + 1}`,
-  stockTitle: `Stock Item ${i + 1}`,
+  stockId: `${i + 1}`,
+  status: Math.floor(Math.random() * 3),
+  expiryDate: new Date(2024, 11, 31).toISOString(),
   suppliarName: `Supplier ${i + 1}`,
+  stockTitle: `Stock Item ${i + 1}`,
   totalQuantity: 10 + i,
-  stockPrice: 100 * (i + 1),
-  totalProfit: 20 * (i + 1),
   quantityAvailable: 5 + i,
   reorderLevel: 10,
+  stockPrice: 100 * (i + 1),
+  totalProfit: 20 * (i + 1),
   createdAt: new Date().toISOString(),
+  unitPrice: 100,
+  totalLoss: 0,
+  repairningCost: 0
 }))
 
 export const useStock = () => {
-  const navigate = useRouter()
+  const router = useRouter()
 
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedStatus, setSelectedStatus] = useState<'all' | 'active' | 'inactive'>('all')
-  const [viewMode, setViewMode] = useState<'table' | 'grid'>('table')
+  // ✅ States
   const [stocks, setStocks] = useState<Stock[]>([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [totalPages, setTotalPages] = useState(1)
   const [showSuccess, setShowSuccess] = useState(false)
 
-  // ✅ Fetch stocks (replace mockStocks with real API call if needed)
+  // ✅ Fetch stocks (mock for now, replace with API call)
   const fetchStocks = useCallback(async () => {
     setIsLoading(true)
     try {
-      // Replace this with your API call
-      // const data = await getStocks(pageNumber, pageSize, searchTerm)
-      const data = {
-        items: mockStocks.slice((pageNumber - 1) * pageSize, pageNumber * pageSize),
-        totalPages: Math.ceil(mockStocks.length / pageSize),
-      }
-      setStocks(data.items ?? [])
-      setTotalPages(data.totalPages ?? 1)
+      const start = (pageNumber - 1) * pageSize
+      const end = pageNumber * pageSize
+      const items = mockStocks.slice(start, end)
+      setStocks(items)
+      setTotalPages(Math.ceil(mockStocks.length / pageSize))
     } catch (error) {
       console.error('Error fetching stocks:', error)
       setStocks([])
@@ -62,19 +52,18 @@ export const useStock = () => {
     } finally {
       setIsLoading(false)
     }
-  }, [pageNumber, pageSize, searchTerm])
+  }, [pageNumber, pageSize])
 
   useEffect(() => {
     fetchStocks()
   }, [fetchStocks])
 
-  // ✅ Submit new stock (mock)
+  // ✅ Add new stock (mock)
   const submitStock = async (newStock: Stock) => {
     setIsLoading(true)
     try {
-      // await postStock(newStock) // replace with API call
       mockStocks.push(newStock) // mock
-      fetchStocks()
+      await fetchStocks()
       setTimeout(() => {
         setIsModalOpen(false)
         setShowSuccess(true)
@@ -85,8 +74,9 @@ export const useStock = () => {
     }
   }
 
+  // ✅ View stock details
   const handleViewDetails = (stockId: string) => {
-    navigate(`/stock/${stockId}`)
+    router.push(`/stock/${stockId}`)
   }
 
   // ✅ Filtered stocks by search term
@@ -100,16 +90,13 @@ export const useStock = () => {
     [stocks, searchTerm]
   )
 
-  // ✅ Stats
-  const stats = useMemo(
-    () => ({
-      totalItems: stocks.reduce((sum, s) => sum + s.totalQuantity, 0),
-      totalValue: stocks.reduce((sum, s) => sum + s.stockPrice, 0),
-      lowStock: stocks.filter((s) => s.quantityAvailable <= s.reorderLevel).length,
-      totalProfit: stocks.reduce((sum, s) => sum + s.totalProfit, 0),
-    }),
-    [stocks]
-  )
+  // ✅ Stock stats
+  const stats = useMemo(() => ({
+    totalItems: stocks.reduce((sum, s) => sum + s.totalQuantity, 0),
+    totalValue: stocks.reduce((sum, s) => sum + s.stockPrice, 0),
+    lowStock: stocks.filter(s => s.quantityAvailable <= s.reorderLevel).length,
+    totalProfit: stocks.reduce((sum, s) => sum + s.totalProfit, 0),
+  }), [stocks])
 
   return {
     stocks,

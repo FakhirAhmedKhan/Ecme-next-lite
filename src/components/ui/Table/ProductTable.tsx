@@ -1,7 +1,14 @@
 import React from 'react'
 import { Eye } from 'lucide-react'
+import { Product, StatusConfig } from '@/@types/stock'
 
-export default function ProductTable({ products, handleViewDetails, statusConfig }: any) {
+interface ProductTableProps {
+  products: Product[];
+  handleViewDetails: (id: string) => void;
+  statusConfig: StatusConfig;
+}
+
+export default function ProductTable({ products, handleViewDetails, statusConfig }: ProductTableProps) {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6">
@@ -39,7 +46,7 @@ export default function ProductTable({ products, handleViewDetails, statusConfig
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {products.map((product, index) => (
+            {products.map((product: Product, index: number) => (
               <tr
                 key={product.id}
                 className="hover:bg-slate-50 transition-colors"
