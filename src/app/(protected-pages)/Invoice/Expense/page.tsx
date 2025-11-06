@@ -1,9 +1,8 @@
+import { ExpenseInvoice } from '@/components/sections/ExpenseInvoice'
 import React from 'react'
 
 export default function Page() {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Expense</h1>
-    </div>
+    <ExpenseInvoice />
   )
 }

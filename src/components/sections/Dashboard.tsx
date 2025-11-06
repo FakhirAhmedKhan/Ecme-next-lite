@@ -6,6 +6,7 @@ import { SalesChart } from "../ui/SalesChart/SalesChart";
 import ErrorHeanding from "../ui/ErrorHeanding/ErrorHeanding";
 import FinancialOverview from "../ui/FinancialOverview/FinancialOverview";
 import { Banknote, Receipt, ShoppingCart, TrendingUp } from "lucide-react";
+import SummaryCard from "../ui/InvoiceStatsCard/Bestcard";
 
 export default function Dashboard() {
   const {
@@ -50,35 +51,46 @@ export default function Dashboard() {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8 px-6">
-        <StatCard
-          label="Stock Value"
+
+        <SummaryCard
           value={formatNumber(data?.totalRevenue)}
+          title="Total Revenue"
+          statusText="Total"
+          iconBgClass="p-3 bg-emerald-100 rounded-xl"
           icon={Receipt}
-          gradient="bg-gradient-to-br from-purple-400 to-purple-600"
+          BorderClasses="border border-emerald-100 shadow-emerald-100/50"
         />
-        <StatCard
-          label="Total Expense"
+        <SummaryCard
           value={formatNumber(25000)}
+          title="Total Expense"
+          statusText="Total"
+          iconBgClass="p-3 bg-emerald-100 rounded-xl"
           icon={TrendingUp}
-          gradient="bg-gradient-to-br from-emerald-400 to-emerald-600"
+          BorderClasses="border-gradient-to-br from-emerald-400 to-emerald-600"
         />
-        <StatCard
-          label="Total Sales"
+        <SummaryCard
           value={formatNumber(data?.totalOrders)}
+          title="Total Sales"
+          statusText="Total"
+          iconBgClass="p-3 bg-emerald-100 rounded-xl"
           icon={ShoppingCart}
-          gradient="bg-gradient-to-br from-blue-400 to-blue-600"
+          BorderClasses="border-gradient-to-br from-blue-400 to-blue-600"
         />
-        <StatCard
-          label="Net Profit"
+        <SummaryCard
           value={formatNumber(35000)}
+          title="Net Profit"
+          statusText="Total"
+          iconBgClass="p-3 bg-emerald-100 rounded-xl"
           icon={Banknote}
-          gradient="bg-gradient-to-br from-teal-400 to-green-600"
+          BorderClasses="border-gradient-to-br from-teal-400 to-green-600"
         />
-        <StatCard
-          label="Suppliers"
+        <SummaryCard
           value={formatNumber(data?.totalSuppliers)}
+          title="Total Suppliers"
+          // statusText="Total"
+          iconBgClass="p-3 bg-emerald-100 rounded-xl"
           icon={TrendingUp}
-          gradient="bg-gradient-to-br from-pink-400 to-red-600"
+          BorderClasses="border-gradient-to-br from-pink-400 to-red-600"
         />
       </div>
 
