@@ -1,12 +1,11 @@
 "use client";
 import Header from "../ui/Head/head";
-import { StatCard } from "../ui/Card/Card";
 import useDashboard from "@/utils/hooks/useDashboard";
 import { SalesChart } from "../ui/SalesChart/SalesChart";
 import ErrorHeanding from "../ui/ErrorHeanding/ErrorHeanding";
 import FinancialOverview from "../ui/FinancialOverview/FinancialOverview";
 import { Banknote, Receipt, ShoppingCart, TrendingUp } from "lucide-react";
-import SummaryCard from "../ui/InvoiceStatsCard/Bestcard";
+import { SummaryCard } from "../ui/InvoiceStatsCard/Bestcard";
 
 export default function Dashboard() {
   const {

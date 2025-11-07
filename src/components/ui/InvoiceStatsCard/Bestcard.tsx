@@ -1,29 +1,31 @@
-import React from 'react'
-import { AlertCircle } from 'lucide-react'
+export const SummaryCard = ({
+  icon: Icon,
+  color,
+  label,
+  value
+}: {
+  icon: React.ElementType;
+  color: string;
+  label: string;
+  value: string | number;
+}) => {
+  const colorClasses = {
+    indigo: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+    emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    rose: 'bg-rose-50 text-rose-700 border-rose-200',
+    gray: 'bg-gray-50 text-gray-700 border-gray-200',
+    amber: 'bg-amber-50 text-amber-700 border-amber-200'
+  };
 
-export default function SummaryCard({
-  containerClass = 'bg-white rounded-2xl p-6 shadow-lg',
-  icon: Icon = AlertCircle,
-  iconBgClass = 'p-3 bg-rose-100 rounded-xl',
-  iconColor = 'text-rose-600',
-  statusText = 'Pending',
-  statusTextClass = 'text-xs font-medium text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full',
-  title = 'Pending Payments',
-  titleClass = 'text-sm font-medium text-gray-600 mb-1',
-  value,
-  valueClass = 'text-3xl font-bold text-gray-900',
-  BorderClasses = 'border border-rose-100', // ✅ Default border class
-}) {
   return (
-    <div className={`${containerClass} ${BorderClasses}`}>
-      <div className="flex items-center justify-between mb-4">
-        <div className={iconBgClass}>
-          <Icon className={`w-6 h-6 ${iconColor}`} />
+    <div className="bg-white rounded-xl p-6 border-2 border-gray-100 hover:shadow-lg transition-all">
+      <div className="flex items-center gap-3 mb-3">
+        <div className={`p-3 rounded-lg ${colorClasses[color as keyof typeof colorClasses]}`}>
+          <Icon className="w-6 h-6" />
         </div>
-        <span className={statusTextClass}>{statusText}</span>
       </div>
-      <h3 className={titleClass}>{title}</h3>
-      <p className={valueClass}>{value}</p>
+      <p className="text-sm text-gray-500 mb-1">{label}</p>
+      <p className="text-2xl font-bold text-gray-900">{value}</p>
     </div>
-  )
-}
+  );
+};
