@@ -1,73 +1,82 @@
-
 "use client"
-import React from 'react'
-import Header from '../ui/Head/head'
-import useDashboard from '@/utils/hooks/useDashboard'
-import SummaryCard from '../ui/InvoiceStatsCard/Bestcard'
-import { AlertCircle, CheckCircle2, DollarSign } from 'lucide-react'
-interface InvoiceStatsProps {
-  invoices: any[] | { items: any[] }
-  totalReceivable?: number
-}
+import SearchBar from "../ui/searchbar/searchbar";
+import { ExpenseTable } from "../ui/Table/ExpenseTable";
+import { ExpenseFormModal } from "../ui/Models/ExpenseFormModal";
+import useExpenseInvoice from "@/utils/hooks/useExpenseInvoice";
+import { InvoiceStats } from "../ui/Table/InvoiceStats";
+import Header from "../ui/Head/head";
+import useDashboard from "@/utils/hooks/useDashboard";
+import { Users } from "lucide-react";
 
-const InvoiceStats: React.FC<InvoiceStatsProps> = ({ invoices, totalReceivable = 0 }) => {
-  const items = Array.isArray(invoices) ? invoices : invoices?.items || []
-
-  const pendingPayments = items.filter((inv) => Number(inv.totalAmount) > Number(inv.paidAmount)).length
-  const paidInvoices = items.filter((inv) => Number(inv.totalAmount) === Number(inv.paidAmount)).length
-  const safeTotal = Number(totalReceivable ?? 0) || 0
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <SummaryCard
-        value={pendingPayments}
-        title="Pending Payments"
-        statusText="Pending"
-        iconBgClass="p-3 bg-rose-100 rounded-xl"
-        icon={AlertCircle}
-        BorderClasses="border border-red-200 shadow-red-100/50"
-      />
-      <SummaryCard
-        value={paidInvoices}
-        title="Paid Invoices"
-        statusText="Paid"
-        iconBgClass="p-3 bg-emerald-100 rounded-xl"
-        icon={CheckCircle2}
-        BorderClasses="border border-emerald-100 shadow-emerald-100/50"
-      />
-      <SummaryCard
-        value={safeTotal}
-        title="Total Receivable"
-        statusText="Total"
-        icon={DollarSign}
-        iconBgClass="p-3 bg-indigo-100 rounded-xl"
-        BorderClasses="shadow-indigo-100/50 border border-indigo-100"
-      />
-    </div>
-  )
-}
-export const ExpenseInvoice = () => {
+const ExpenseInvoiceManager = () => {
+  const {
+    form,
+    setForm,
+    categories,
+    suppliers,
+    expenses,
+    filteredExpenses,
+    totalAmount,
+    totalReceivable,
+    showModal,
+    handleEdit,
+    handleDelete,
+    handleSubmit,
+    handleCloseModal,
+    handleSaved,
+    editExpense,
+    error,
+    isSubmitting,
+    searchTerm,
+    setSearchTerm,
+  } = useExpenseInvoice();
   const { data, chartData, isVisible, time, greeting } = useDashboard()
 
   return (
-    <div>
-      <Header
-        H1Heading="Expense Invoice"
-        paragraph="Real-time insights and analytics at your fingertips."
-        Updates="3 New Updates"
-        StutsUpdates="All Systems Operational"
-        setChartData={chartData}
-        setData={data}
-        isVisible={isVisible}
-        time={time}
-        greeting={greeting}
-        showButton={false}
-        showRangePicker={false}
-      />
-      <InvoiceStats
-        invoices={data?.invoices || []}
-        totalReceivable={data?.totalReceivable}
-      />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
+        <Header
+          H1Heading="Expense Management"
+          Paragraph="Manage your Expenses and track performance"
+          BtnText="Add Expense"
+          Updates="3 New Updates"
+          StutsUpdates="All Systems Operational"
+          setChartData={chartData}
+          setData={data}
+          isVisible={isVisible}
+          time={time}
+          greeting={greeting}
+          showRangePicker={false}
+          Icon={<Users className="text-white" size={28} />}
+          showButton={false}
+        />
+
+        <InvoiceStats invoices={expenses} totalReceivable={totalReceivable} />
+
+        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+
+        <ExpenseTable
+          expenses={filteredExpenses}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+
+        <ExpenseFormModal
+          isOpen={showModal}
+          onClose={handleCloseModal}
+          onSaved={handleSaved}
+          editExpense={editExpense}
+          form={form}
+          setForm={setForm}
+          categories={categories}
+          suppliers={suppliers}
+          error={error}
+          isSubmitting={isSubmitting}
+          handleSubmit={handleSubmit}
+        />
+      </div>
     </div>
-  )
-}
+  );
+};
+
+export default ExpenseInvoiceManager;
