@@ -1,31 +1,16 @@
-import { lazy } from 'react'
 import type { Routes } from '@/@types/routes'
 
-const authRoute: Routes = [
-    {
+// Standardized shape: object keyed by path -> Route
+// This matches the `Routes` type used across the app.
+const authRoute: Routes = {
+    '/sign-in': {
         key: 'signIn',
-        path: `/SignIn`,
-        component: lazy(() => import('@/components/auth/SignIn')),
         authority: [],
     },
-    // {
-    //     key: 'signUp',
-    //     path: `/sign-up`,
-    //     component: lazy(() => import('@/views/auth/SignUp')),
-    //     authority: [],
-    // },
-    // {
-    //     key: 'forgotPassword',
-    //     path: `/forgot-password`,
-    //     component: lazy(() => import('@/views/auth/ForgotPassword')),
-    //     authority: [],
-    // },
-    // {
-    //     key: 'resetPassword',
-    //     path: `/reset-password`,
-    //     component: lazy(() => import('@/views/auth/ResetPassword')),
-    //     authority: [],
-    // },
-]
+    // add other auth routes here if needed:
+    // '/sign-up': { key: 'signUp', authority: [] },
+    // '/forgot-password': { key: 'forgotPassword', authority: [] },
+    // '/reset-password': { key: 'resetPassword', authority: [] },
+}
 
 export default authRoute

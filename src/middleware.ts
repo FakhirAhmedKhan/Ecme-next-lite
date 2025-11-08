@@ -10,18 +10,35 @@ import appConfig from '@/configs/app.config'
 
 const { auth } = NextAuth(authConfig)
 
-const publicRoutes = Object.entries(_publicRoutes).map(([key]) => key)
-const authRoutes = Object.entries(_authRoutes).map(([key]) => key)
+const extractPaths = (routes: any): string[] => {
+    if (!routes) return []
+    if (Array.isArray(routes)) return routes.map((r) => (r?.path || '').toString().toLowerCase())
+    if (typeof routes === 'object') return Object.keys(routes).map((k) => k.toString().toLowerCase())
+    return []
+}
 
-const apiAuthPrefix = `${appConfig.apiPrefix}/auth`
+const publicRoutes = extractPaths(_publicRoutes)
+const authRoutes = extractPaths(_authRoutes)
+
+// appConfig.apiPrefix is a full URL in your config (eg. https://.../api)
+// derive the pathname so we compare against nextUrl.pathname correctly
+let apiAuthPrefix = ''
+try {
+    const url = new URL(appConfig.apiPrefix)
+    apiAuthPrefix = `${url.pathname.replace(/\/$/, '')}/auth`
+} catch (e) {
+    // fallback if apiPrefix is already a path
+    apiAuthPrefix = `${appConfig.apiPrefix.replace(/\/$/, '')}/auth`
+}
 
 export default auth((req) => {
     const { nextUrl } = req
     const isSignedIn = !!req.auth
 
-    const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
-    const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
-    const isAuthRoute = authRoutes.includes(nextUrl.pathname)
+    const pathname = nextUrl.pathname.toLowerCase()
+    const isApiAuthRoute = pathname.startsWith(apiAuthPrefix)
+    const isPublicRoute = publicRoutes.includes(pathname)
+    const isAuthRoute = authRoutes.includes(pathname)
 
     /** Skip auth middleware for api routes */
     if (isApiAuthRoute) return

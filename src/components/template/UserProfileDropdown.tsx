@@ -5,6 +5,7 @@ import Dropdown from '@/components/ui/Dropdown'
 import withHeaderItem from '@/utils/hoc/withHeaderItem'
 import Link from 'next/link'
 import signOut from '@/server/actions/auth/handleSignOut'
+import appConfig from '@/configs/app.config'
 import useCurrentSession from '@/utils/hooks/useCurrentSession'
 import { PiUserDuotone, PiSignOutDuotone } from 'react-icons/pi'
 
@@ -22,7 +23,24 @@ const _UserDropdown = () => {
     const { session } = useCurrentSession()
 
     const handleSignOut = async () => {
-        await signOut()
+        try {
+            const res: any = await signOut()
+
+            // Prefer server-provided redirect if available. Fallback to
+            // configured unauthenticated entry path to avoid navigating to
+            // 'undefined'.
+            const redirectUrl = res?.redirect ?? appConfig.unAuthenticatedEntryPath
+
+            // Ensure we navigate on the client.
+            if (typeof window !== 'undefined') {
+                // If redirectUrl is a full URL return it, else ensure it is a path
+                window.location.href = String(redirectUrl)
+            }
+        } catch (err) {
+            console.error('Error during sign out', err)
+            // as a last resort, navigate to sign-in
+            if (typeof window !== 'undefined') window.location.href = appConfig.unAuthenticatedEntryPath
+        }
     }
 
     const avatarProps = {

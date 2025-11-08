@@ -35,6 +35,14 @@ export default {
             },
         }),
     ],
+    // Session settings: keep sessions short-lived (30 seconds) as requested.
+    // `maxAge` is in seconds.
+    session: {
+        maxAge: 30, // 30 seconds
+        // `updateAge` controls how often the session is updated/rotated (in seconds).
+        // Keep it small so the session state is refreshed frequently during development.
+        updateAge: 10,
+    },
     callbacks: {
         async session(payload) {
             /** apply extra user attributes here, for example, we add 'authority' & 'id' in this section */

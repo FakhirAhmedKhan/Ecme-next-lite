@@ -20,6 +20,10 @@ export default async function RootLayout({
     const navigationTree = await getNavigation()
     const theme = await getTheme()
     const session = await auth()
+    // Debug: log server-side auth() result so we can confirm if the server
+    // sees the current session (helps diagnose 'Anonymous' UI).
+    // This will appear in the Next dev server console.
+    console.log('[RootLayout] auth() ->', session)
 
     return (
         <AuthProvider session={session}>

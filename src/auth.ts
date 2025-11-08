@@ -4,8 +4,12 @@ import authConfig from '@/configs/auth.config'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     pages: {
-        signIn: appConfig.authenticatedEntryPath,
-        error: appConfig.authenticatedEntryPath,
+        // When an unauthenticated user needs to sign in, send them to the
+        // unauthenticated entry path (the app's sign-in page).
+        signIn: appConfig.unAuthenticatedEntryPath,
+        // Use the sign-in page for errors as well so users land on the auth UI
+        // instead of the authenticated entry.
+        error: appConfig.unAuthenticatedEntryPath,
     },
     ...authConfig,
 })
